@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import com.sun.mail.imap.protocol.Item;
 
 @WebServlet(name = "MultiPartServlet", urlPatterns = { "/multiPartServlet" })
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 1024 * 5, maxRequestSize = 1024 * 1024
@@ -43,14 +40,18 @@ public class MultipartServlet extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding(utf8.name());
 
-		File default_dest_dir = Paths.get(System.getProperty("jboss.home.dir"), UPLOAD_DIRECTORY).toFile();
-		String dest_path_dir = Optional.ofNullable(request.getParameter("fileDestination"))
-				.orElse(default_dest_dir.toString());
+		File default_dest_dir = Paths.get(System.getProperty("jboss.server.temp.dir"), UPLOAD_DIRECTORY).toFile();
+
+		System.out.println(default_dest_dir);
+
+		String destPathOpt = Optional.ofNullable(request.getParameter("fileDestination")).orElse("");
+
+		String dest_path_dir = destPathOpt.isEmpty() ? default_dest_dir.toString() : destPathOpt;
 
 		File uploadDir = new File(dest_path_dir);
 
 		if (!uploadDir.exists()) {
-			uploadDir.mkdir();
+			uploadDir.mkdirs();
 		}
 
 		try {
@@ -66,7 +67,7 @@ public class MultipartServlet extends HttpServlet {
 
 					System.out.println(uploadFileDest.toString());
 
-					// part.write(uploadFileDest.toString());
+					part.write(uploadFileDest.toString());
 				} else {
 					request.setAttribute("message", "File " + fileName + " exists!!");
 				}

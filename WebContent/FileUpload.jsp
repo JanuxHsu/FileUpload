@@ -1,10 +1,11 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>File Upload</title>
 <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -13,10 +14,9 @@
 	<div id="dropzone">Drag files here!</div>
 	<ul id="files"></ul>
 
-	<form method="post" action="multiPartServlet" enctype="multipart/form-data">
+	<form method="post" action="UploadFileServlet" enctype="multipart/form-data">
 		<input type="file" name="multiPartServlet" /> 
-		<input type="text" name="fileDestination" /> 
-		Choose a file: 
+		<label>Choose a file:</label>
 		<input type="submit" value="Upload" />
 	</form>
 
